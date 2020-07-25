@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.dsx.rbac.app.mapper.RoleMenuMapper">
+
+    <select id="selectByUserId" resultType="java.lang.String">
+        SELECT
+            m.PERMS
+        FROM
+            `t_menu` m
+            LEFT JOIN `t_role_menu` rm ON rm.MENU_ID = m.MENU_ID
+            LEFT JOIN `t_user_role` ur ON ur.ROLE_ID = rm.ROLE_ID
+        WHERE
+            ur.USER_ID = #{userId}
+    </select>
+</mapper>
