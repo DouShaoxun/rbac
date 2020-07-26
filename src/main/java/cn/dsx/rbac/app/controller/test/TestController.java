@@ -1,17 +1,19 @@
 package cn.dsx.rbac.app.controller.test;
 
+import cn.dsx.rbac.app.bean.entity.User;
+import cn.dsx.rbac.app.bean.query.UserQuery;
+import cn.dsx.rbac.common.annotation.LogAnnotation;
 import cn.dsx.rbac.common.result.Result;
 import cn.dsx.rbac.common.utils.ResultUtils;
+import cn.dsx.rbac.common.utils.UserUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.wf.jwtp.annotation.Ignore;
 import org.wf.jwtp.annotation.RequiresPermissions;
 import org.wf.jwtp.annotation.RequiresRoles;
-import org.wf.jwtp.provider.Token;
-import org.wf.jwtp.util.SubjectUtil;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Classname: TestController
@@ -23,24 +25,29 @@ import javax.servlet.http.HttpServletRequest;
 @RequiresRoles("admin")
 public class TestController {
 
+    @Autowired
+    UserUtils userUtils;
 
+    @LogAnnotation
     @RequiresPermissions("system")
     @PostMapping("/1")
-    public Result test1(String name,HttpServletRequest request) {
-        Token token = SubjectUtil.getToken(request);
-        return ResultUtils.ok().data("name", name);
-
+    public Result test1(@RequestBody UserQuery userQuery) {
+        User currentUser = userUtils.getCurrentUser();
+        return ResultUtils.ok().data("name", userQuery.toString());
     }
 
 
-
-    @Ignore // 忽略 权限认证
+    @RequiresPermissions("p2")
     @PostMapping("/2")
-    public Result test2(String name, HttpServletRequest request)  {
-        Token token = SubjectUtil.getToken(request);// @Ignore token 为null
-        System.out.println(name);
-        return ResultUtils.ok().data("name", name);
+    public Result test2(@RequestBody UserQuery userQuery) {
+        return ResultUtils.ok().data("name", userQuery);
     }
 
+    @LogAnnotation
+    @Ignore // 忽略 权限认证
+    @PostMapping("/3")
+    public Result test3(@RequestBody UserQuery userQuery) {
+        return ResultUtils.ok().data("name", userQuery);
+    }
 
 }

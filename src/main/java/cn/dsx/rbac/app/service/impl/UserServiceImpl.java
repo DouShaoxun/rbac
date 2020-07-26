@@ -15,6 +15,7 @@ import cn.hutool.crypto.digest.Digester;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.wf.jwtp.provider.Token;
 import org.wf.jwtp.provider.TokenStore;
@@ -35,6 +36,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Resource
     private TokenStore tokenStore;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Autowired
     private Digester md5;
@@ -76,7 +80,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String[] permissions = permissionsName.toArray(new String[permissionsName.size()]);
 
         // 签发token  token默认时间 3600 秒
-        Token token = tokenStore.createNewToken(username, permissions, roles);
+        Token token = tokenStore.createNewToken(String.valueOf(userId), permissions, roles);
+
+
+        // 当前用户信息 存入redis当中 密码不存入
+        user.setPassword(null);
+        redisTemplate.opsForValue().set(String.valueOf(userId), user);
         return token;
     }
 }

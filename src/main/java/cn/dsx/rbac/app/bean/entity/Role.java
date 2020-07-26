@@ -1,21 +1,19 @@
 package cn.dsx.rbac.app.bean.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author dousx
@@ -25,13 +23,13 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("t_role")
-@ApiModel(value="Role对象", description="")
+@ApiModel(value = "Role对象", description = "")
 public class Role implements Serializable {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "角色ID")
-      @TableId(value = "ROLE_ID", type = IdType.ASSIGN_ID)
+    @TableId(value = "ROLE_ID", type = IdType.ASSIGN_ID)
     private Long roleId;
 
     @ApiModelProperty(value = "角色名称")
@@ -42,12 +40,14 @@ public class Role implements Serializable {
     @TableField("REMARK")
     private String remark;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @ApiModelProperty(value = "创建时间")
-      @TableField(value = "CREATE_TIME", fill = FieldFill.INSERT)
+    @TableField(value = "CREATE_TIME", fill = FieldFill.INSERT)
     private Date createTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     @ApiModelProperty(value = "修改时间")
-      @TableField(value = "MODIFY_TIME", fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "MODIFY_TIME", fill = FieldFill.INSERT_UPDATE)
     private Date modifyTime;
 
 
